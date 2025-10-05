@@ -1,0 +1,50 @@
+version: '3.8'
+
+name: docker-project-dev
+
+services:
+  db:
+    image: postgres:14-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=notesdb
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d notesdb" ]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8888:3002"
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=notesdb
+      - DB_PORT=5432
+      - PORT=3002
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: [ "pnpm","nodemon","--legacy-watch","server.js" ]
+    networks: [ app-network ]
+
+volumes:
+  postgres-data:
+
+networks:
+  app-network:
+    driver: bridge

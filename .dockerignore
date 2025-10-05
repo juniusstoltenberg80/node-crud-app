@@ -1,0 +1,5 @@
+Dockerfile.dev
+docker-compose.dev.yml
+npm-debug.log
+pnpm-debug.log
+.DS_Store

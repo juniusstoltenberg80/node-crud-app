@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // مدیریت ارسال فرم (برای افزودن یا ویرایش)
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = noteIdInput.value;
